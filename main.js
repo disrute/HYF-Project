@@ -18,6 +18,19 @@ axios.get(url)
       document.body.innerHTML += cardHTML;
     };
 
+    for (let i = 0; i < 10; i++) {
+      let optionItem = document.createElement('option');
+      optionItem.innerText = repos[i].name; 
+      document.getElementById('repoSelect').appendChild(optionItem);
+    };
+
+
+    // grab the name of the selected option
+    $(document.body).on('change', "#repoSelect", function (e) {
+      var optVal = $("#repoSelect option:selected").val();
+      console.log(optVal);
+    });
+
     // NOTE: you can select to display using the for loop which has more control over how many items are display,
     // or use the 'for of' below to format all retrieved repos.
 
@@ -38,3 +51,18 @@ axios.get(url)
   document.getElementById('main').setAttribute('class', 'error');
   document.getElementById('main').innerText = error;
 });
+
+// document.getElementById('repoSelect').addEventListener('change', () => {
+//   console.log('event triggered');
+// });
+
+
+
+
+window.onload = () => {
+  if (window.jQuery) {
+    console.log('jquery loaded');
+  } else {
+    console.log('jquery NOT loaded');
+  }
+};
