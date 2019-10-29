@@ -35,5 +35,6 @@ axios.get(url)
     console.log(response.data);
 })
 .catch(function (error) {
-    console.log(error);
+  document.getElementById('main').setAttribute('class', 'error');
+  document.getElementById('main').innerText = error;
 });
