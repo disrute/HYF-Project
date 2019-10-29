@@ -24,11 +24,11 @@ axios.get(url)
       var optVal = $("#repoSelect option:selected").val();
       // create a card with optVal name.
       let displayRepo = repos.filter(repo => repo.name === optVal);
-      console.log(displayRepo[0].name);
+      console.log(displayRepo[0]);
 
-      let cardHTML = `<div class="card" style="width: 60vw;">
+      let cardHTML = `<div class="card";">
       <div class="card-body">
-      <h5 class="card-title"><strong>Name:</strong> ${displayRepo[0].name}</h5>
+      <h5 class="card-title"><strong>Name:</strong> <a href="${displayRepo[0].html_url}" target="_blank">${displayRepo[0].name}</a></h5>
            <p class="card-text"><strong>Description:</strong> ${displayRepo[0].description}</p>
            <p class="card-text"><strong>Forks:</strong> ${displayRepo[0].forks}</p>
          </div>
