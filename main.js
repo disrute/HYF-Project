@@ -4,12 +4,8 @@ const url = 'https://api.github.com/orgs/HackYourFuture/repos?per_page=100';
 axios.get(url)
 .then(function (response) {
     let repos = response.data;
+    // sort
     repos.sort((a, b) => a.name.localeCompare(b.name));
-
-    // for of loop here which will create & populate a new card for each repo.
-    // will look like this...
-
-    // loop to display on first 10 repos.
 
     for (let i = 0; i < 10; i++) {
         let cardHTML = `<div class="card" style="width: 60vw;">
@@ -21,6 +17,9 @@ axios.get(url)
       </div>`
       document.body.innerHTML += cardHTML;
     };
+
+    // NOTE: you can select to display using the for loop which has more control over how many items are display,
+    // or use the 'for of' below to format all retrieved repos.
 
     // for (repo of repos) {
     //     let cardHTML = `<div class="card" style="width: 60vw;">
