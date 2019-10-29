@@ -5,6 +5,7 @@
     .then(function (response) {
       let repos = response.data;
       repos.sort((a, b) => a.name.localeCompare(b.name));
+      console.log(repos);
 
       // Populate select with options from API
       for (let i = 0; i < 10; i++) {
@@ -16,6 +17,7 @@
       // decorate card with first repo retrieved:  
       let firstRepo = response.data[0];
       document.getElementById('cardDisplay').innerHTML = makeCard(firstRepo.html_url, firstRepo.name, firstRepo.description, firstRepo.forks);
+      //document.getElementById('contDisplay').innerHTML = makeContributorCard(firstRepo.);
 
 
       // grab the name of the selected option
@@ -40,5 +42,23 @@
      </div>
    </div>`;
     return card;
+  };
+
+  function makeContributorCard(cAvatar) { //(cAvatar, cUrl, cName)
+      let contCard = `<div class="card mb-3" style="max-width: 540px;">
+      <div class="row no-gutters">
+        <div class="col-md-4">
+          <img src="${cAvatar}" class="card-img" alt="...">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+          </div>
+        </div>
+      </div>
+    </div>`;
+    return contCard;
   };
 }
