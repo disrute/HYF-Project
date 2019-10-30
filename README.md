@@ -1,4 +1,4 @@
-# BootstrapAndNode
+# HYF Project
 
 ## About
 This project makes use of the Github API. The site displays data on the HackYourFuture repositories and lists contributors.
