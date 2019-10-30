@@ -2,19 +2,7 @@
 {
   const url = 'https://api.github.com/orgs/HackYourFuture/repos?per_page=100';
   let repoData = [];
-
-  // function getData() {
-  //   axios.get(url)
-  //   .then(function (response) {
-  //     let repos = response.data;
-  //     repos.sort((a, b) => a.name.localeCompare(b.name));
-  //     repoData.push(repos);
-  //   })
-  //   .catch(function (error) {
-  //     document.getElementById('colOne').setAttribute('class', 'error');
-  //     document.getElementById('colOne').innerText = error;
-  //   });
-  // };
+  let contributorUrl = '';
 
   function getRepoData() {
     //let myData = [];
@@ -31,16 +19,18 @@
       document.getElementById('colOne').setAttribute('class', 'error');
       document.getElementById('colOne').innerText = error;
     })
-    .then(function (repoData) {
-      console.log(repoData);
+    .then(() => {
       populateSelect();
       firstRepo();
       userPicksRepo();
     })
+    .then(() => {
+      // function that has get request to grab contributor data.
+      getContributorData();
+    })
   };
 
   getRepoData();
-  //console.log('getting data outside of promise: ' + repoData[0]);
 
   function populateSelect() {
     for (let i = 0; i < 10; i++) {
@@ -53,6 +43,8 @@
   function firstRepo() {
     let firstRepo = repoData[0];
     document.getElementById('cardDisplay').innerHTML = makeCard(firstRepo.html_url, firstRepo.name, firstRepo.description, firstRepo.forks);
+    contributorUrl = firstRepo.contributors_url;
+    console.log(contributorUrl);
     //document.getElementById('contDisplay').innerHTML = makeContributorCard(firstRepo.);
   }
 
@@ -62,6 +54,18 @@
       // create a card with optVal name.
       let displayRepo = repoData.filter(repo => repo.name === optVal);
       document.getElementById('cardDisplay').innerHTML = makeCard(displayRepo[0].html_url, displayRepo[0].name, displayRepo[0].description, displayRepo[0].forks);
+      contributorUrl = displayRepo[0].contributors_url;
+    });
+  };
+
+  function getContributorData() {
+    axios.get(contributorUrl)
+    .then(function (response) {
+      let contData = response.data;
+      makeContributorCard(contData[0].avatar_url);
+    })
+    .catch(function (error) {
+      console.log(error);
     });
   };
 
@@ -90,6 +94,6 @@
         </div>
       </div>
     </div>`;
-    return contCard;
+    document.getElementById('contDisplay').innerHTML = contCard;
   };
 }
