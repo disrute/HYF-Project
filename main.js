@@ -1,38 +1,69 @@
+'use strict'
 {
   const url = 'https://api.github.com/orgs/HackYourFuture/repos?per_page=100';
+  let repoData = [];
 
-  axios.get(url)
-    .then(function (response) {
-      let repos = response.data;
+  // function getData() {
+  //   axios.get(url)
+  //   .then(function (response) {
+  //     let repos = response.data;
+  //     repos.sort((a, b) => a.name.localeCompare(b.name));
+  //     repoData.push(repos);
+  //   })
+  //   .catch(function (error) {
+  //     document.getElementById('colOne').setAttribute('class', 'error');
+  //     document.getElementById('colOne').innerText = error;
+  //   });
+  // };
+
+  function getRepoData() {
+    //let myData = [];
+    axios.get(url)
+    .then(function (res) {
+      let repos = res.data;
       repos.sort((a, b) => a.name.localeCompare(b.name));
-      console.log(repos);
-
-      // Populate select with options from API
-      for (let i = 0; i < 10; i++) {
-        let optionItem = document.createElement('option');
-        optionItem.innerText = repos[i].name;
-        document.getElementById('repoSelect').appendChild(optionItem);
-      };
-
-      // decorate card with first repo retrieved:  
-      let firstRepo = response.data[0];
-      document.getElementById('cardDisplay').innerHTML = makeCard(firstRepo.html_url, firstRepo.name, firstRepo.description, firstRepo.forks);
-      //document.getElementById('contDisplay').innerHTML = makeContributorCard(firstRepo.);
-
-
-      // grab the name of the selected option
-      $(document.body).on('change', "#repoSelect", function () {
-        var optVal = $("#repoSelect option:selected").val();
-        // create a card with optVal name.
-        let displayRepo = repos.filter(repo => repo.name === optVal);
-        document.getElementById('cardDisplay').innerHTML = makeCard(displayRepo[0].html_url, displayRepo[0].name, displayRepo[0].description, displayRepo[0].forks);
-      });
-
+      //console.log(repos);
+      repoData = repos;
+      //console.log(repoData);
+      return repoData;
     })
     .catch(function (error) {
       document.getElementById('colOne').setAttribute('class', 'error');
       document.getElementById('colOne').innerText = error;
+    })
+    .then(function (repoData) {
+      console.log(repoData);
+      populateSelect();
+      firstRepo();
+      userPicksRepo();
+    })
+  };
+
+  getRepoData();
+  //console.log('getting data outside of promise: ' + repoData[0]);
+
+  function populateSelect() {
+    for (let i = 0; i < 10; i++) {
+      let optionItem = document.createElement('option');
+      optionItem.innerText = repoData[i].name;
+      document.getElementById('repoSelect').appendChild(optionItem);
+    }
+  }
+
+  function firstRepo() {
+    let firstRepo = repoData[0];
+    document.getElementById('cardDisplay').innerHTML = makeCard(firstRepo.html_url, firstRepo.name, firstRepo.description, firstRepo.forks);
+    //document.getElementById('contDisplay').innerHTML = makeContributorCard(firstRepo.);
+  }
+
+  function userPicksRepo() {
+    $(document.body).on('change', "#repoSelect", function () {
+      var optVal = $("#repoSelect option:selected").val();
+      // create a card with optVal name.
+      let displayRepo = repoData.filter(repo => repo.name === optVal);
+      document.getElementById('cardDisplay').innerHTML = makeCard(displayRepo[0].html_url, displayRepo[0].name, displayRepo[0].description, displayRepo[0].forks);
     });
+  };
 
   function makeCard(repoUrl, repoName, repoDesc, repoForks) {
     let card = `<div class="card-body">
