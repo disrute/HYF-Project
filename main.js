@@ -35,8 +35,8 @@
       console.log(repoData);
       populateSelect();
       firstRepo();
+      userPicksRepo();
     })
-    //return repoData;
   };
 
   getRepoData();
@@ -55,6 +55,15 @@
     document.getElementById('cardDisplay').innerHTML = makeCard(firstRepo.html_url, firstRepo.name, firstRepo.description, firstRepo.forks);
     //document.getElementById('contDisplay').innerHTML = makeContributorCard(firstRepo.);
   }
+
+  function userPicksRepo() {
+    $(document.body).on('change', "#repoSelect", function () {
+      var optVal = $("#repoSelect option:selected").val();
+      // create a card with optVal name.
+      let displayRepo = repoData.filter(repo => repo.name === optVal);
+      document.getElementById('cardDisplay').innerHTML = makeCard(displayRepo[0].html_url, displayRepo[0].name, displayRepo[0].description, displayRepo[0].forks);
+    });
+  };
 
   function makeCard(repoUrl, repoName, repoDesc, repoForks) {
     let card = `<div class="card-body">
@@ -83,28 +92,4 @@
     </div>`;
     return contCard;
   };
-
-    // document.addEventListener('load', getData());
-
-     //Populate select with options from API
-    //   for (let i = 0; i < 10; i++) {
-    //     let optionItem = document.createElement('option');
-    //     optionItem.innerText = repoData[i].name;
-    //     document.getElementById('repoSelect').appendChild(optionItem);
-      //};
-
-
-  /*
-
-      // decorate card with first repo retrieved:  
-
-
-      // grab the name of the selected option
-      $(document.body).on('change', "#repoSelect", function () {
-        var optVal = $("#repoSelect option:selected").val();
-        // create a card with optVal name.
-        let displayRepo = repos.filter(repo => repo.name === optVal);
-        document.getElementById('cardDisplay').innerHTML = makeCard(displayRepo[0].html_url, displayRepo[0].name, displayRepo[0].description, displayRepo[0].forks);
-      });
-  */
 }
