@@ -2,19 +2,7 @@
 {
   const url = 'https://api.github.com/orgs/HackYourFuture/repos?per_page=100';
   let repoData = [];
-
-  // function getData() {
-  //   axios.get(url)
-  //   .then(function (response) {
-  //     let repos = response.data;
-  //     repos.sort((a, b) => a.name.localeCompare(b.name));
-  //     repoData.push(repos);
-  //   })
-  //   .catch(function (error) {
-  //     document.getElementById('colOne').setAttribute('class', 'error');
-  //     document.getElementById('colOne').innerText = error;
-  //   });
-  // };
+  let contributorUrl = '';
 
   function getRepoData() {
     //let myData = [];
@@ -22,25 +10,25 @@
     .then(function (res) {
       let repos = res.data;
       repos.sort((a, b) => a.name.localeCompare(b.name));
-      //console.log(repos);
       repoData = repos;
-      //console.log(repoData);
       return repoData;
     })
     .catch(function (error) {
       document.getElementById('colOne').setAttribute('class', 'error');
       document.getElementById('colOne').innerText = error;
     })
-    .then(function (repoData) {
-      console.log(repoData);
+    .then(() => {
       populateSelect();
       firstRepo();
       userPicksRepo();
     })
+    .then(() => {
+      // function that has get request to grab contributor data.
+      getContributorData();
+    })
   };
 
   getRepoData();
-  //console.log('getting data outside of promise: ' + repoData[0]);
 
   function populateSelect() {
     for (let i = 0; i < 10; i++) {
@@ -53,7 +41,8 @@
   function firstRepo() {
     let firstRepo = repoData[0];
     document.getElementById('cardDisplay').innerHTML = makeCard(firstRepo.html_url, firstRepo.name, firstRepo.description, firstRepo.forks);
-    //document.getElementById('contDisplay').innerHTML = makeContributorCard(firstRepo.);
+    contributorUrl = firstRepo.contributors_url;
+    console.log(contributorUrl);
   }
 
   function userPicksRepo() {
@@ -62,6 +51,28 @@
       // create a card with optVal name.
       let displayRepo = repoData.filter(repo => repo.name === optVal);
       document.getElementById('cardDisplay').innerHTML = makeCard(displayRepo[0].html_url, displayRepo[0].name, displayRepo[0].description, displayRepo[0].forks);
+      contributorUrl = displayRepo[0].contributors_url;
+      getContributorData();
+    });
+  };
+
+  function getContributorData() {
+    axios.get(contributorUrl)
+    .then(function (response) {
+      let contData = response.data;
+      // for (const c in contData) {
+      //   makeContributorCard(c.avatar_url, c.html_url, c.login);
+      // }
+      for (let c of contData) {
+        console.log(c);
+        makeContributorCard(c.avatar_url, c.html_url, c.login);
+      };
+      //makeContributorCard(contData[0].avatar_url, contData[0].html_url, contData[0].login);
+      console.log(contData);
+    })
+    .catch(function (error) {
+      document.getElementById('contDisplay').setAttribute('class', 'error');
+      document.getElementById('contDisplay').innerText = error;
     });
   };
 
@@ -75,21 +86,19 @@
     return card;
   };
 
-  function makeContributorCard(cAvatar) { //(cAvatar, cUrl, cName)
+  function makeContributorCard(cAvatar, cUrl, cName) {
       let contCard = `<div class="card mb-3" style="max-width: 540px;">
       <div class="row no-gutters">
         <div class="col-md-4">
-          <img src="${cAvatar}" class="card-img" alt="...">
+          <img src="${cAvatar}" class="card-img" style="padding: 10px">
         </div>
         <div class="col-md-8">
           <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+            <h5 class="card-title"><a href="${cUrl}" target="_blank">${cName}</a></h5>
           </div>
         </div>
       </div>
     </div>`;
-    return contCard;
+    document.getElementById('contDisplay').innerHTML += contCard;
   };
 }
