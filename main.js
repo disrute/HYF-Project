@@ -55,6 +55,7 @@
       let displayRepo = repoData.filter(repo => repo.name === optVal);
       document.getElementById('cardDisplay').innerHTML = makeCard(displayRepo[0].html_url, displayRepo[0].name, displayRepo[0].description, displayRepo[0].forks);
       contributorUrl = displayRepo[0].contributors_url;
+      getContributorData();
     });
   };
 
@@ -62,7 +63,7 @@
     axios.get(contributorUrl)
     .then(function (response) {
       let contData = response.data;
-      makeContributorCard(contData[0].avatar_url);
+      makeContributorCard(contData[0].avatar_url, contData[0].html_url, contData[0].login);
     })
     .catch(function (error) {
       console.log(error);
@@ -79,17 +80,15 @@
     return card;
   };
 
-  function makeContributorCard(cAvatar) { //(cAvatar, cUrl, cName)
+  function makeContributorCard(cAvatar, cUrl, cName) {
       let contCard = `<div class="card mb-3" style="max-width: 540px;">
       <div class="row no-gutters">
         <div class="col-md-4">
-          <img src="${cAvatar}" class="card-img" alt="...">
+          <img src="${cAvatar}" class="card-img" style="padding: 10px">
         </div>
         <div class="col-md-8">
           <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+            <h5 class="card-title"><a href="${cUrl}" target="_blank">${cName}</a></h5>
           </div>
         </div>
       </div>
