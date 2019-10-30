@@ -10,9 +10,7 @@
     .then(function (res) {
       let repos = res.data;
       repos.sort((a, b) => a.name.localeCompare(b.name));
-      //console.log(repos);
       repoData = repos;
-      //console.log(repoData);
       return repoData;
     })
     .catch(function (error) {
@@ -45,7 +43,6 @@
     document.getElementById('cardDisplay').innerHTML = makeCard(firstRepo.html_url, firstRepo.name, firstRepo.description, firstRepo.forks);
     contributorUrl = firstRepo.contributors_url;
     console.log(contributorUrl);
-    //document.getElementById('contDisplay').innerHTML = makeContributorCard(firstRepo.);
   }
 
   function userPicksRepo() {
@@ -63,10 +60,19 @@
     axios.get(contributorUrl)
     .then(function (response) {
       let contData = response.data;
-      makeContributorCard(contData[0].avatar_url, contData[0].html_url, contData[0].login);
+      // for (const c in contData) {
+      //   makeContributorCard(c.avatar_url, c.html_url, c.login);
+      // }
+      for (let c of contData) {
+        console.log(c);
+        makeContributorCard(c.avatar_url, c.html_url, c.login);
+      };
+      //makeContributorCard(contData[0].avatar_url, contData[0].html_url, contData[0].login);
+      console.log(contData);
     })
     .catch(function (error) {
-      console.log(error);
+      document.getElementById('contDisplay').setAttribute('class', 'error');
+      document.getElementById('contDisplay').innerText = error;
     });
   };
 
@@ -93,6 +99,6 @@
         </div>
       </div>
     </div>`;
-    document.getElementById('contDisplay').innerHTML = contCard;
+    document.getElementById('contDisplay').innerHTML += contCard;
   };
 }
